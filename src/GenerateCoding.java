@@ -15,6 +15,7 @@ import java.util.Map.Entry;
 
 import java.util.PriorityQueue;
 import java.util.Scanner;
+import java.util.Stack;
 
 public class GenerateCoding {
 
@@ -56,7 +57,7 @@ public class GenerateCoding {
 			
 			BufferedReader br = new BufferedReader(new FileReader(textFile));
 			String line = br.readLine();
-			for(int i = 0; i<line.length() - ngramSize; i++){
+			for(int i = 0; i<line.length() - ngramSize+1; i++){
 				String gram = line.substring(i, i+ngramSize);
 				long prev = count.getOrDefault(gram, 0l);
 				prev++;
@@ -92,13 +93,13 @@ public class GenerateCoding {
 		initialSize = count.entrySet().size();
 		milestone = 0;
 		foo = 0;
-		System.out.println("Calculating Huffman Codes...");
+		System.out.println("Constructing List of Symbols...");
 		System.out.println("--------------------------------------------------");
 		
 		PriorityQueue<Node> nodes =  new PriorityQueue<>(count.entrySet().size(), new Comparator<Node>() {
 			@Override
 			public int compare(Node o1, Node o2) {
-				return o1.v.compareTo(o2.v);
+				return o1.probability.compareTo(o2.probability);
 			}
 		});
 		
@@ -134,43 +135,56 @@ public class GenerateCoding {
 		System.out.println();
 		System.out.println();
 		System.out.println("Determining codes...");
-		
-		//at this point, the list will only contain one node: the root of the tree 
-		Node root =  nodes.poll();
-		ArrayList<Result> pairs = new ArrayList<Result>();
-		
 		milestone = 0;
 		System.out.println("--------------------------------------------------");
 		
-		//this will go through the tree, deleting nodes one at a time, and returning a 'Result' which
-		//contains the huffman code of any leaf node when it is deleted
-		while(!root.deleted ){
-			Result res = getNode(root, "");
-			if(res != null){
-				//it was a leaf node, so we should track its huffman code
-				pairs.add(res);
-				if(100.0*pairs.size()/initialSize > milestone){
-					System.out.print("*");
-					milestone += 2;
-				}
+		
+		//at this point, the list will only contain one node: the root of the tree 
+		Node root =  nodes.poll();
+		root.bitString = "";
+		
+		ArrayList<Node> huffmanCodesList = new ArrayList<>();
+		HashMap<String, String> huffmanCodesMap = new HashMap<>();
+		
+		Stack<Node> stack = new Stack<>();
+		stack.push(root);
+		
+		while(!stack.isEmpty()){
+			
+			if(100.0*huffmanCodesList.size()/initialSize > milestone){
+				System.out.print("*");
+				milestone += 2;
+			}
+			
+			Node current = stack.pop();
+			
+			if(current.orig){
+				huffmanCodesList.add(current);
+				huffmanCodesMap.put(current.symbol, current.bitString);
+			} else{
+				current.left.bitString = current.bitString.concat("0");
+				current.right.bitString = current.bitString.concat("1");
+				stack.push(current.right);
+				stack.push(current.left);
+				
 			}
 		}
 		
 		System.out.println();
 		System.out.println();
 		System.out.println("Writing to output file...");
-		//sort the results for readability (shortest code first)
-		Collections.sort(pairs, new Comparator<Result>() {
-
-			@Override
-			public int compare(Result o1, Result o2) {
-				return o1.bitString.length() - o2.bitString.length();
-			}
-		});
+		
+//		Collections.sort(huffmanCodesList, new Comparator<Node>() {
+//			@Override
+//			public int compare(Node o1, Node o2) {
+//				return o1.bitString.length() - o2.bitString.length();
+//			}
+//		});
+//		
 //		
 //		PrintWriter pw = new PrintWriter(new OutputStreamWriter(System.out));
-//		for(Result p :  pairs){
-//			String s = p.symbol + "~:~" + p.bitString;
+//		for(Node n :  huffmanCodesList){
+//			String s = n.symbol + "~:~" + n.bitString;
 //			pw.println(s);
 //		}
 //		pw.flush();
@@ -184,48 +198,23 @@ public class GenerateCoding {
 	}
 	
 	
-	private static Result getNode(Node n, String s){
-		if(n.l != null && !n.l.deleted){
-			s = s.concat("0");
-			return getNode(n.l, s);
-		} if(n.r != null && !n.r.deleted){
-			s = s.concat("1");
-			return getNode(n.r, s);
-		}
-		if(n.orig){
-			n.deleted = true;
-			return new Result(n.c, s);
-		}
-		
-		n.deleted = true;
-		return null;
-	}
-	
-	private static class Result{
-		public String symbol;
-		public String bitString;
-		public Result(String symbol, String bitString){
-			this.bitString = bitString;
-			this.symbol = symbol;
-		}
-	}
-	
 	private static class Node{
-		Node l;
-		Node r;
-		String c;
+		Node left;
+		Node right;
+		String symbol;
+		String bitString;
 		boolean orig;
-		boolean deleted = false;
-		Double v;
+		Double probability;
+		
 		public Node(Node l, Node r){
-			this.l = l;
-			this.r = r;
-			v = l.v + r.v;
+			this.left = l;
+			this.right = r;
+			probability = l.probability + r.probability;
 			orig = false;
 		}
 		public Node(String c, Double v){
-			this.v = v;
-			this.c = c;
+			this.probability = v;
+			this.symbol = c;
 			orig = true;
 		}
 	}
