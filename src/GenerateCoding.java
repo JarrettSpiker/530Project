@@ -19,6 +19,8 @@ import java.util.Stack;
 
 public class GenerateCoding {
 
+	static final int SORTING_MAX = 10;
+	
 	public static void main(String[] args) throws Exception{
 		Scanner sc = new Scanner(System.in);
 		
@@ -52,6 +54,14 @@ public class GenerateCoding {
 		
 		System.out.println("Enter the n-gram size > ");
 		Integer ngramSize = Integer.parseInt(sc.nextLine());
+		
+		
+		System.out.println("Enter the path of the output file > ");
+		File outputFile = new File(sc.nextLine());
+		outputFile.createNewFile();
+		
+		
+		
 		for(File textFile : textFiles){
 			System.out.println("Reading " + textFile.getName());
 			
@@ -172,23 +182,46 @@ public class GenerateCoding {
 		
 		System.out.println();
 		System.out.println();
-		System.out.println("Writing to output file...");
 		
-//		Collections.sort(huffmanCodesList, new Comparator<Node>() {
-//			@Override
-//			public int compare(Node o1, Node o2) {
-//				return o1.bitString.length() - o2.bitString.length();
-//			}
-//		});
-//		
-//		
-//		PrintWriter pw = new PrintWriter(new OutputStreamWriter(System.out));
-//		for(Node n :  huffmanCodesList){
-//			String s = n.symbol + "~:~" + n.bitString;
-//			pw.println(s);
-//		}
-//		pw.flush();
+		if(ngramSize <= SORTING_MAX){
+			System.out.println("Sorting...");
+			
+			Collections.sort(huffmanCodesList, new Comparator<Node>() {
 
+				@Override
+				public int compare(Node o1, Node o2) {
+					return o1.bitString.length() - o2.bitString.length();
+				}
+			});
+			
+			
+			System.out.println();
+			System.out.println();
+		}
+		
+		System.out.println("Writing to output file...");
+		milestone = 0;
+		foo = 0;
+		System.out.println("--------------------------------------------------");
+		
+		
+		BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile));
+
+		for(Node n :  huffmanCodesList){
+			foo++;
+			if(100.0 *foo/huffmanCodesList.size() > milestone){
+				System.out.print("*");
+				milestone += 2;
+			}
+			String s = n.symbol + "~:~" + n.bitString + "\n";
+			bw.write(s);
+		}
+		
+		System.out.println();
+		System.out.println();
+		
+		bw.flush();
+		bw.close();
 		sc.close();
 		
 		
