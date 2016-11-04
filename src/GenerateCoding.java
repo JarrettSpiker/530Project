@@ -21,6 +21,9 @@ public class GenerateCoding {
 
 	static final int SORTING_MAX = 10;
 	
+	static final String defaultSearchDir = "/Users/jspiker/books/";
+	static final String defaultOutputDir = "/Users/jspiker/output/";
+	
 	public static void main(String[] args) throws Exception{
 		Scanner sc = new Scanner(System.in);
 		
@@ -28,6 +31,12 @@ public class GenerateCoding {
 		
 		System.out.println("Enter the directory to search > ");
 		String searchDir = sc.nextLine();
+		
+		if(searchDir.isEmpty()){
+			searchDir = defaultSearchDir;
+		}
+		
+		
 		File inputDir = new File(searchDir);
 		if(!inputDir.exists() && ! inputDir.isDirectory()){
 			System.out.println("THAT ISNT A DIRECTORY");
@@ -57,7 +66,14 @@ public class GenerateCoding {
 		
 		
 		System.out.println("Enter the path of the output file > ");
-		File outputFile = new File(sc.nextLine());
+		
+		String outputDir = sc.nextLine();
+		if(outputDir.isEmpty()){
+			outputDir = defaultOutputDir + ngramSize + ".txt";
+		}
+		
+		
+		File outputFile = new File(outputDir);
 		outputFile.createNewFile();
 		
 		
