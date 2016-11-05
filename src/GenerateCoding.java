@@ -4,15 +4,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map.Entry;
-
-
 import java.util.PriorityQueue;
 import java.util.Scanner;
 import java.util.Stack;
@@ -21,8 +17,8 @@ public class GenerateCoding {
 
 	static final int SORTING_MAX = 10;
 	
-	static final String defaultSearchDir = "/Users/jspiker/books/";
-	static final String defaultOutputDir = "/Users/jspiker/output/";
+	static final String defaultSearchDir = "/home/jspiker/books/";
+	static final String defaultOutputDir = "/home/jspiker/output/";
 	
 	public static void main(String[] args) throws Exception{
 		Scanner sc = new Scanner(System.in);
@@ -111,6 +107,31 @@ public class GenerateCoding {
 			}
 			probs.put(entry.getKey(), entry.getValue().doubleValue()/total);
 		}
+		
+		System.out.println();
+		System.out.println();
+		
+		initialSize = count.entrySet().size();
+		milestone = 0;
+		foo = 0;
+		File outputProbabilities = new File(outputDir + ".probs");
+		outputProbabilities.createNewFile();
+		BufferedWriter bw = new BufferedWriter(new FileWriter(outputProbabilities));
+		
+		
+		System.out.println("Writing probabilties to file...");
+		System.out.println("--------------------------------------------------");
+		for(Entry<String, Double> entry : probs.entrySet()){
+			foo++;
+			if(100.0*foo/initialSize > milestone){
+				milestone += 2;
+				System.out.print("*");
+			}
+			bw.write(entry.getKey() + " ~:~ " + entry.getValue().toString());
+			bw.write('\n');
+		}
+		bw.flush();
+		bw.close();
 		
 		System.out.println();
 		System.out.println();
@@ -221,7 +242,7 @@ public class GenerateCoding {
 		System.out.println("--------------------------------------------------");
 		
 		
-		BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile));
+		bw = new BufferedWriter(new FileWriter(outputFile));
 
 		for(Node n :  huffmanCodesList){
 			foo++;
