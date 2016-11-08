@@ -17,8 +17,8 @@ public class GenerateCoding {
 
 	static final int SORTING_MAX = 10;
 	
-	static final String defaultSearchDir = "/home/jspiker/books/";
-	static final String defaultOutputDir = "/home/jspiker/output/";
+	static final String defaultSearchDir = System.getProperty("user.home") + "/books/";
+	static final String defaultOutputDir = System.getProperty("user.home") + "/output/natural/";
 	
 	public static void main(String[] args) throws Exception{
 		Scanner sc = new Scanner(System.in);

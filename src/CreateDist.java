@@ -1,27 +1,46 @@
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
+
+
+
 public class CreateDist {	
+
+
+	static final String defaultOutputDir = System.getProperty("user.home") + "/output/generated/";
+	
 	public static void main(String[] args) throws Exception{
 		Scanner sc = new Scanner(System.in);
+		
 		System.out.println("Enter the output directory name: ");
 		String outputFile = sc.nextLine();
+		
+		if(outputFile.isEmpty()){
+			outputFile = defaultOutputDir;
+		}
+		
+		
 		System.out.println("Enter the ngram range: ");
 		int nGramRange = Integer.parseInt(sc.nextLine());
+		
 		System.out.println("Enter the factor: ");
 		double factor = Double.parseDouble(sc.nextLine());
+		
+		sc.close();
 		
 		ArrayList<String> alphabet = new ArrayList<>();
 		alphabet.add("a");
 		alphabet.add("b");
 		alphabet.add("c");
-		//alphabet.add("d");
+		alphabet.add("d");
+//		alphabet.add("e");
+//		alphabet.add("f"); 
+//		alphabet.add("g");
+		
 		
 		double quotient = 0;
 		
@@ -49,11 +68,17 @@ public class CreateDist {
 			double totalWeight = 0;
 			for(String previous : previousSet){
 				for(String ch : alphabet){
+					if(previous.endsWith(ch)){
+						continue;
+					}
 					//System.out.println("On: "+ previous +  ch);
 					double weight = weights.get(ch) + weights.get(previous);
 					double weightOfCh =  weights.get(ch);
 					for(int i = 0; i<previous.length(); i++){
 						weight += (weights.get(String.valueOf(previous.charAt(i))) - weightOfCh)/Math.pow(2, i+1);
+					}
+					if(weight <= 0){
+						continue;
 					}
 					totalWeight += weight;
 					weights.put(previous + ch, weight);
