@@ -5,41 +5,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
-
-
-
-public class CreateDist {	
-
-
-	static final String defaultOutputDir = System.getProperty("user.home") + "/output/generated/";
-	
+public class CreateDistribution {	
 	public static void main(String[] args) throws Exception{
 		Scanner sc = new Scanner(System.in);
-		
 		System.out.println("Enter the output directory name: ");
 		String outputFile = sc.nextLine();
-		
-		if(outputFile.isEmpty()){
-			outputFile = defaultOutputDir;
-		}
-		
-		
+		System.out.println("Enter the alphabet size: ");
+		int alphSize = Integer.parseInt(sc.nextLine());
 		System.out.println("Enter the ngram range: ");
 		int nGramRange = Integer.parseInt(sc.nextLine());
-		
 		System.out.println("Enter the factor: ");
 		double factor = Double.parseDouble(sc.nextLine());
 		
-		sc.close();
 		
+		sc.close();
 		ArrayList<String> alphabet = new ArrayList<>();
-		alphabet.add("a");
-		alphabet.add("b");
-		alphabet.add("c");
-		alphabet.add("d");
-//		alphabet.add("e");
-//		alphabet.add("f"); 
-//		alphabet.add("g");
+		for(int i = 97; i<97+alphSize; i++){
+			alphabet.add(String.valueOf((char)i));
+		}
 		
 		
 		double quotient = 0;
@@ -62,29 +45,41 @@ public class CreateDist {
 		previousSet.add("");
 		weights.put("", 0.0);
 		
+		
 		for(int size = 1; size<= nGramRange; size++){
-			System.out.println("On " + size + "-grams");
 			ArrayList<String> newSet = new ArrayList<>();
+			
 			double totalWeight = 0;
-			for(String previous : previousSet){
-				for(String ch : alphabet){
-					if(previous.endsWith(ch)){
-						continue;
+			
+			if(size != 1){
+				System.out.println("On " + size + "-grams");
+				for(String previous : previousSet){
+					int index = alphabet.indexOf(String.valueOf(previous.charAt(previous.length()-1)));
+					boolean goUp = index<alphabet.size()/2;
+					for(int i = index; goUp ? i < alphabet.size() : i >= 0 ; i = goUp ? i+1 : i-1){
+						if(i == index){
+							continue;
+						}
+						String ch = alphabet.get(i);
+						double weight = weights.get(ch) + weights.get(previous);
+						double weightOfCh =  weights.get(ch);
+						for(int j = 0; j<previous.length(); j++){
+							weight += (weights.get(String.valueOf(previous.charAt(j))) - weightOfCh)/Math.pow(2, j+1);
+						}
+						totalWeight += weight;
+						weights.put(previous + ch, weight);
+						newSet.add(previous + ch);
 					}
-					//System.out.println("On: "+ previous +  ch);
-					double weight = weights.get(ch) + weights.get(previous);
-					double weightOfCh =  weights.get(ch);
-					for(int i = 0; i<previous.length(); i++){
-						weight += (weights.get(String.valueOf(previous.charAt(i))) - weightOfCh)/Math.pow(2, i+1);
-					}
-					if(weight <= 0){
-						continue;
-					}
-					totalWeight += weight;
-					weights.put(previous + ch, weight);
-					newSet.add(previous + ch);
 				}
 			}
+			else{
+				for(String ch : alphabet){
+					totalWeight += weights.get(ch);
+					newSet.add(ch);
+				}
+			}
+			
+			
 			
 			File f = new File(outputFile + "/probs" + size +".txt");
 			f.createNewFile();
