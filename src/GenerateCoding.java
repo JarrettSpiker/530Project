@@ -3,7 +3,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -17,133 +16,62 @@ public class GenerateCoding {
 
 	static final int SORTING_MAX = 10;
 	
-	static final String defaultSearchDir = "/home/jspiker/books/";
-	static final String defaultOutputDir = "/home/jspiker/output/";
+	static final String defaultProbabilitiesFile = "/home/jspiker/books/";
+	static final String defaultOutputFile = "/home/jspiker/output/";
 	
 	public static void main(String[] args) throws Exception{
 		Scanner sc = new Scanner(System.in);
 		
 		long startTime = System.currentTimeMillis();
 		
-		System.out.println("Enter the directory to search > ");
-		String searchDir = sc.nextLine();
+		System.out.println("Enter the probabilities file > ");
+		String probabilitesFileName = sc.nextLine();
 		
-		if(searchDir.isEmpty()){
-			searchDir = defaultSearchDir;
+		if(probabilitesFileName.isEmpty()){
+			probabilitesFileName = defaultProbabilitiesFile;
 		}
 		
-		
-		File inputDir = new File(searchDir);
-		if(!inputDir.exists() && ! inputDir.isDirectory()){
-			System.out.println("THAT ISNT A DIRECTORY");
+		File probsFile = new File(probabilitesFileName);
+		if(!probsFile.exists()){
+			System.out.println("THAT FILE DOEST EXIST");
 			sc.close();
 			return;
 		}
 		
+		System.out.println("Enter the output file > ");
+		String outputFileName = sc.nextLine();
+		sc.close();
 		
-		ArrayList<File> textFiles = new ArrayList<>();
-		
-		for(String f : inputDir.list(new FilenameFilter() {
-					@Override
-					public boolean accept(File dir, String name) {
-						return name.endsWith("proc.txt");
-					}})
-		){
-			textFiles.add(new File(inputDir, f));
-			
+		if(outputFileName.isEmpty()){
+			outputFileName = defaultOutputFile;
 		}
 		
-		
-		HashMap<String, Long> count = new HashMap<>();
-		int total = 0;
-		
-		System.out.println("Enter the n-gram size > ");
-		Integer ngramSize = Integer.parseInt(sc.nextLine());
-		
-		
-		System.out.println("Enter the path of the output file > ");
-		
-		String outputDir = sc.nextLine();
-		if(outputDir.isEmpty()){
-			outputDir = defaultOutputDir + ngramSize + ".txt";
-		}
-		
-		
-		File outputFile = new File(outputDir);
+		File outputFile = new File(outputFileName);
 		outputFile.createNewFile();
 		
+		BufferedReader br = new BufferedReader(new FileReader(probsFile));
+		HashMap<String, Double> probs = new HashMap<>();
 		
-		
-		for(File textFile : textFiles){
-			System.out.println("Reading " + textFile.getName());
-			
-			BufferedReader br = new BufferedReader(new FileReader(textFile));
-			String line = br.readLine();
-			for(int i = 0; i<line.length() - ngramSize+1; i++){
-				String gram = line.substring(i, i+ngramSize);
-				long prev = count.getOrDefault(gram, 0l);
-				prev++;
-				count.put(gram, prev);
-				total++;
-			}
-			
-			br.close();
+		System.out.println("Reading Probabilities...");
+		String line= br.readLine();
+		int ngramSize = line.split(" ~:~ ")[0].length();
+		while(line != null){
+			String[] split = line.split(" ~:~ ");
+			probs.put(split[0],Double.parseDouble(split[1]));
+			line = br.readLine();
 		}
 		
-		System.out.println();
-		System.out.println("Calculating Probabilities...");
+		br.close();
 		
-		double initialSize = count.entrySet().size();
+		long initialSize = probs.entrySet().size();
 		int milestone = 0;
-		int foo = 0;
-		System.out.println("--------------------------------------------------");
-	
-		HashMap<String,Double> probs = new HashMap<String, Double>();
-		for(Entry<String, Long> entry : count.entrySet()){
-			foo++;
-			if(100.0*foo/initialSize > milestone){
-				milestone += 2;
-				System.out.print("*");
-			}
-			probs.put(entry.getKey(), entry.getValue().doubleValue()/total);
-		}
-		
+		long foo = 0;
 		System.out.println();
 		System.out.println();
-		
-		initialSize = count.entrySet().size();
-		milestone = 0;
-		foo = 0;
-		File outputProbabilities = new File(outputDir + ".probs");
-		outputProbabilities.createNewFile();
-		BufferedWriter bw = new BufferedWriter(new FileWriter(outputProbabilities));
-		
-		
-		System.out.println("Writing probabilties to file...");
-		System.out.println("--------------------------------------------------");
-		for(Entry<String, Double> entry : probs.entrySet()){
-			foo++;
-			if(100.0*foo/initialSize > milestone){
-				milestone += 2;
-				System.out.print("*");
-			}
-			bw.write(entry.getKey() + " ~:~ " + entry.getValue().toString());
-			bw.write('\n');
-		}
-		bw.flush();
-		bw.close();
-		
-		System.out.println();
-		System.out.println();
-		
-		
-		initialSize = count.entrySet().size();
-		milestone = 0;
-		foo = 0;
 		System.out.println("Constructing List of Symbols...");
 		System.out.println("--------------------------------------------------");
 		
-		PriorityQueue<Node> nodes =  new PriorityQueue<>(count.entrySet().size(), new Comparator<Node>() {
+		PriorityQueue<Node> nodes =  new PriorityQueue<>(probs.entrySet().size(), new Comparator<Node>() {
 			@Override
 			public int compare(Node o1, Node o2) {
 				return o1.probability.compareTo(o2.probability);
@@ -242,7 +170,7 @@ public class GenerateCoding {
 		System.out.println("--------------------------------------------------");
 		
 		
-		bw = new BufferedWriter(new FileWriter(outputFile));
+		BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile));
 
 		for(Node n :  huffmanCodesList){
 			foo++;
