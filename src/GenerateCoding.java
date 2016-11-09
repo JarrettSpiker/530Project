@@ -16,8 +16,8 @@ public class GenerateCoding {
 
 	static final int SORTING_MAX = 10;
 	
-	static final String defaultProbabilitiesFile = "/home/jspiker/books/";
-	static final String defaultOutputFile = "/home/jspiker/output/";
+	static final String defaultProbabilitiesFile = System.getProperty("user.home") + "/output/probs.txt";
+	static final String defaultOutputFile = System.getProperty("user.home") + "/output/codings.txt";
 	
 	public static void main(String[] args) throws Exception{
 		Scanner sc = new Scanner(System.in);
