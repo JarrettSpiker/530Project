@@ -85,7 +85,7 @@ public class CreateDistribution {
 			f.createNewFile();
 			BufferedWriter bw = new BufferedWriter(new FileWriter(f));
 			for(String s : newSet){
-				bw.write(s + ":" + weights.get(s)/totalWeight);
+				bw.write(s + " ~:~ " + weights.get(s)/totalWeight);
 				bw.write('\n');
 			}
 			bw.flush();
