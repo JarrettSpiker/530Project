@@ -66,5 +66,11 @@ To use a generated language:
        - You must have probability files for for n of every size UP TO AND INCLUDING this number
 
 # Encoding a file
-I actually have code for this, but it is not compatible with what I have written so far for the project...so I have not pushed it yet.
+  1. Run the `FindCodeLength.java` program
+  2. Enter the name of the file to encode.
+       - Only the first line of this file will be used. This will be true if the file was generated using the `ProcessFiles.java` program, or the `GenerateFile.java` program
+  3. Enter the name of the encodings file. This is the file created by `GenerateCoding.java` program
+  4. The coding length of the file will be printed to std out. This is a worst case number.
+       - In order to account for codes not found in the encodings file, we count the number of codes which are not found in the encodings, and determine how long the encodings of that many 0-probability n-grams would be if they had been considered when generating the encoding (I know that doesnt make much sense, I pretty much need to draw a picture, or give a lot more detail, to show what I mean, but feel free to ask).
+       - In the case where the length of the sample is not divisible by n, we find what the worst possible encoding of the trailing characters are. This is the maximum of the lengths of all codes which map to an n-gram which the trailing characters prefix (again, feel free to ask if that doesnt make sense...though I dont really think that it matters).
 
