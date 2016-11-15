@@ -6,10 +6,17 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 public class CreateDistribution {	
+	
+	public static final String defaultOutputDir = System.getProperty("user.home") + "/genOutput";
+	
 	public static void main(String[] args) throws Exception{
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Enter the output directory name: ");
 		String outputFile = sc.nextLine();
+		if(outputFile.isEmpty()){
+			outputFile = defaultOutputDir;
+		}
+		
 		System.out.println("Enter the alphabet size: ");
 		int alphSize = Integer.parseInt(sc.nextLine());
 		System.out.println("Enter the ngram range: ");
@@ -95,10 +102,7 @@ public class CreateDistribution {
 			
 		}
 		
-		
-		
 		System.out.println("Done");
-		
 		
 	}
 }

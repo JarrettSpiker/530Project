@@ -12,10 +12,16 @@ import java.util.Scanner;
 
 public class GenerateFile {
 
+	public static final String defaultProbsDir = System.getProperty("user.home") + "/genOutput";
+	public static final String defaultOuptutFile = System.getProperty("user.home") + "/genOutput/sampleFile.txt";
+	
 	public static void main(String[] args) throws Exception {
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Enter the name of the probabilities directory > ");
 		String probFilesName = sc.nextLine();
+		if(probFilesName.isEmpty()){
+			probFilesName = defaultProbsDir;
+		}
 		File probsDir = new File(probFilesName);
 		if(!probsDir.exists() || !probsDir.isDirectory()){
 			System.out.println("THIS IS NOT A Directory");
@@ -25,6 +31,9 @@ public class GenerateFile {
 		
 		System.out.println("Enter the name of the output file > ");
 		String outputFileName = sc.nextLine();
+		if(outputFileName.isEmpty()){
+			outputFileName = defaultOuptutFile;
+		}
 		File outputFile = new File(outputFileName);
 		outputFile.createNewFile();
 		BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile));
@@ -50,8 +59,8 @@ public class GenerateFile {
 		for(int i = 1; i< maxNgramSize; i++ ){
 			current++;
 			if(100.0*current/target > milestone){
-				milestone += 10;
-				System.out.print("*");
+				milestone += 2;
+				System.out.print("*****");
 			}
 			
 			File iFile = new File(probsDir, "probs" + i +".txt");
@@ -81,6 +90,8 @@ public class GenerateFile {
 			
 		}
 		
+		System.out.println();
+		System.out.println();
 		System.out.println("Reading the probabilities of max n-grams...");
 		Map<String, Double> probs = new HashMap<String, Double>();
 		String line = null;
@@ -91,6 +102,7 @@ public class GenerateFile {
 		}
 		br.close();
 		
+		System.out.println();
 		System.out.println("Constructing prefix tree.....");
 		System.out.println("--------------------------------------------------");
 		target = probs.size();
@@ -182,9 +194,12 @@ public class GenerateFile {
 			bw.write(c);
 			currentLength++;
 			if(currentLength %50 == 0){
+				bw.newLine();
 				bw.flush();
 			}
-			currentPrefix = currentPrefix.substring(1) + c;
+			if(maxNgramSize > 1){
+				currentPrefix = currentPrefix.substring(1) + c;
+			}
 		}
 		bw.flush();
 		
@@ -198,6 +213,10 @@ public class GenerateFile {
 			this.prob = prob;
 			this.s = s;
 		}
+		
+		public String toString(){
+			return s + " : " + prob;
+		}
 	}
 	
 	private static class TreeItem{
@@ -206,6 +225,9 @@ public class GenerateFile {
 		public TreeItem(double prob, char c){
 			this.prob = prob;
 			this.c = c;
+		}
+		public String toString(){
+			return c + " : " + prob;
 		}
 	}
 }
