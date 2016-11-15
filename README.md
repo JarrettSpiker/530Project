@@ -12,7 +12,7 @@ You can either generate codings based on English or on a generated language.
 
 To use English:
   1. You need a directory full of txt files. The `books` directory in this repo should work
-  2. Run the `ProvessFiles.java` program.
+  2. Run the `ProcessFiles.java` program.
       - Point it at the directory containing the txt files.
       - You will need to provide an output directory as well. We can call this `outputDirA`
       - IF YOU WANT to restrict the characters used in "English", this is the file you need to change (just have it ignore ASCII values you dont care about)
@@ -43,7 +43,27 @@ This is what the `FindStatisticalDistance.java` file is for. Pass it the output 
 This uses Jensen-Shannon divergence. See https://en.wikipedia.org/wiki/Jensen%E2%80%93Shannon_divergence
 
 # Creating a sample
-This will require probability files. Have not written code yet
+
+This works with both generated and with English, all it requires is the probability files.
+
+To use a generated language:
+  1. Run the `GenerateFile.java` program
+  2. Enter the name of the probabilities directory
+       - This will be the output directory of the `CreateDistribution.java` program
+  3. Enter the name of the output file. This is the file which the sample will be written to
+  4. Enter the number of characters you want to be in the output file (ie, the size of the sample)
+  5. Enter the maximum n-gram size
+       - You must have probabilities for ngrams of every size UP TO AND INCLUDING this number
+
+To use a generated language:
+  1. You will need to generate probability files for n of size 1 through your desired maximum n-gram size (inclusive). This will mean running the `GenerateProbabilites.java` program n times.
+       - These files must be names `probs1.txt`, `probs2.txt`, etc., up to `probsN.txt`, and must exist in a single directory, which we will call `inputDir`
+  2. Run the `GenerateFile.java` program
+  3. Enter the full path of `inputDir`
+  4. Enter the name of the output file. This is the file which the sample will be written to
+  5. Enter the number of characters you want to be in the output file (ie, the size of the sample)
+  6. Enter the maximum n-gram size
+       - You must have probability files for for n of every size UP TO AND INCLUDING this number
 
 # Encoding a file
 I actually have code for this, but it is not compatible with what I have written so far for the project...so I have not pushed it yet.

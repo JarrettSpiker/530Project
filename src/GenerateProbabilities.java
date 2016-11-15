@@ -59,7 +59,7 @@ public class GenerateProbabilities {
 		String outputDir = sc.nextLine();
 		sc.close();
 		if(outputDir.isEmpty()){
-			outputDir = defaultOutputFile + ngramSize + "Probs.txt";
+			outputDir = defaultOutputFile + "probs" + ngramSize + ".txt";
 		}
 		
 		
