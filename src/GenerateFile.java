@@ -194,7 +194,7 @@ public class GenerateFile {
 			bw.write(c);
 			currentLength++;
 			if(currentLength %50 == 0){
-				bw.newLine();
+				//bw.newLine();
 				bw.flush();
 			}
 			if(maxNgramSize > 1){

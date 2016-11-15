@@ -178,7 +178,7 @@ public class GenerateCoding {
 				System.out.print("*");
 				milestone += 2;
 			}
-			String s = n.symbol + "~:~" + n.bitString + "\n";
+			String s = n.symbol + " ~:~ " + n.bitString + "\n";
 			bw.write(s);
 		}
 		
