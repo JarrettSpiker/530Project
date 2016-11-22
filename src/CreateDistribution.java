@@ -68,7 +68,7 @@ public class CreateDistribution {
 							continue;
 						}
 						String ch = alphabet.get(i);
-						double weight = weights.get(ch) + weights.get(previous);
+						double weight = weights.get(ch) * weights.get(previous);
 						double weightOfCh =  weights.get(ch);
 						for(int j = 0; j<previous.length(); j++){
 							weight += (weights.get(String.valueOf(previous.charAt(j))) - weightOfCh)/Math.pow(2, j+1);
