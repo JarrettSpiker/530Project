@@ -1,9 +1,15 @@
 #!/usr/bin/ruby
+
+# ./multipleGeneratedFiles.rb -d ~/test1/ -e 5 -a 2 -A 5 -f 1 -F 3 -r 1 -R  10  -m 5000 -l 10000 -i 5000 -M 5000 -L 10000 -I 5000
+
 require 'optparse'
 require 'open3'
 
 directory = "/Users/jspiker/temp/"
 
+minFactor = 1
+minNgramRange = 1
+minAlphabetSize = 2
 maxFactor = 1
 maxNgramRange = 1
 maxAlphabetSize = 5
@@ -18,20 +24,34 @@ testingSampleIncrement = -1
 
 expirimentTimes = 1
 
+skipPrinting = false
+
 OptionParser.new do |options|
   options.on("-d n", "--dir=n", String, "Working dir") do |n|
     directory = n
   end
 
-  options.on("-a n", "--alphabetSize=n", "Alphabet Size") do |n|
+  options.on("-a n", "--alphabetSize=n", "Lower Alphabet Size") do |n|
+    minAlphabetSize = n.to_i
+  end
+
+  options.on("-f f", "--factor=f", "Lower Factor") do |f|
+    minFactor = f.to_i
+  end
+
+  options.on("-r n", "--range=n", "Lower N-gram range") do |n|
+    minNgramRange = n.to_i
+  end
+
+  options.on("-A n", "--MalphabetSize=n", "Upper Alphabet Size") do |n|
     maxAlphabetSize = n.to_i
   end
 
-  options.on("-f f", "--factor=f", "Factor") do |f|
+  options.on("-F f", "--Mfactor=f", "Upper Factor") do |f|
     maxFactor = f.to_i
   end
 
-  options.on("-r n", "--range=n", "N-gram range") do |n|
+  options.on("-R n", "--Mrange=n", "Upper N-gram range") do |n|
     maxNgramRange = n.to_i
   end
 
@@ -62,6 +82,10 @@ OptionParser.new do |options|
 
   options.on("-I n", "--testIncrement=n", "Testing Sample Increment") do |n|
     testingSampleIncrement = n.to_i
+  end
+
+  options.on("-q", "--skipPrinting", "skipPrinting") do
+    skipPrinting = true
   end
 end.parse!
 
@@ -102,11 +126,11 @@ end
 `mkdir #{directory}/workingDir/`
 
 
-for factor in 1..maxFactor do
+for factor in minFactor..maxFactor do
 
-  for alphabetSize in 2..maxAlphabetSize do
+  for alphabetSize in minAlphabetSize..maxAlphabetSize do
 
-    for ngramRange in 1..maxNgramRange do
+    for ngramRange in minNgramRange..maxNgramRange do
 
       for e in 1..expirimentTimes do
         #run the expiriment and copy the results file to the output dir
@@ -120,8 +144,10 @@ for factor in 1..maxFactor do
         puts("_____________________________________________________________")
         Open3.popen2("./generatedFiles.rb -d #{directory}/workingDir/ -a #{alphabetSize} -f #{factor} -r #{ngramRange}  -m #{learningSampleMin} -l #{learningSampleMax} -i #{learningSampleIncrement} -M #{testingSampleMin} -L #{testingSampleMax} -I #{testingSampleIncrement} -o #{directory}/workingDir/output.txt --skipCompiling -c #{directory}/obj/") do |stdin, stdout, wait_thr|
           stdin.close
-          while line = stdout.gets
-            puts line
+          if(!skipPrinting)
+            while line = stdout.gets
+              puts line
+            end
           end
           stdout.close
 
