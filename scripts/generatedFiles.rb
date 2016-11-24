@@ -123,13 +123,13 @@ if(!skipCompiling)
 end
 
 outputFile = File.open(outputFileName ,"a+")
-outputFile.puts("Data for generated language")
-outputFile.puts("Language stats:")
-outputFile.puts("Factor : "  +factor.to_s)
-outputFile.puts("N-gram range : " + ngramRange.to_s)
-outputFile.puts("Alphabet Size: " + alphabetSize.to_s)
-outputFile.puts("-------------------------")
-outputFile.puts()
+#outputFile.puts("Data for generated language")
+#outputFile.puts("Language stats:")
+#outputFile.puts("Factor : "  +factor.to_s)
+#outputFile.puts("N-gram range : " + ngramRange.to_s)
+#outputFile.puts("Alphabet Size: " + alphabetSize.to_s)
+#outputFile.puts("-------------------------")
+#outputFile.puts()
 
 #create the distribution
 `mkdir #{directory}/probs/`
@@ -266,7 +266,7 @@ while(incrementCounter <= testingSampleMax ) do
       puts line
       lastLine = line
     end
-    outputFile.puts("Test Sample Length: " + incrementCounter.to_s + "; Learning Length: ideal; Coding length: " + lastLine)
+    outputFile.puts(factor.to_s + ";" + ngramRange.to_s + ";" + alphabetSize.to_s + ";" + incrementCounter.to_s + ";ideal;" + lastLine)
     stdout.close
   end
 
@@ -296,7 +296,7 @@ while(testingSampleCounter <= testingSampleMax) do
         puts line
         lastLine =line
       end
-      outputFile.puts("Test Sample Length: " + testingSampleCounter.to_s + "; Learning Length: " + learningSampleCounter.to_s + "; Coding length: " + lastLine)
+      outputFile.puts(factor.to_s + ";" + ngramRange.to_s + ";" + alphabetSize.to_s + ";" + incrementCounter.to_s + ";" +  learningSampleCounter.to_s + ";" + lastLine)
       stdout.close
     end
 
