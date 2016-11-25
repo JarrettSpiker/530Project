@@ -66,7 +66,7 @@ if(classpath == "")
 end
 
 if(outputFileName == "unknown")
-  outputFileName = directory + "/output.txt"
+  outputFileName = workingDir + "/output.txt"
 end
 
 if(booksDir == "")
