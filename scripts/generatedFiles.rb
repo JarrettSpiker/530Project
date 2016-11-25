@@ -333,10 +333,6 @@ while(incrementCounter <= testingSampleMax ) do
     puts("#{directory}/testingSampleFiles/#{incrementCounter}/sample.proc.txt")
     stdin.puts("#{directory}/idealCoding.txt")
     puts("#{directory}/idealCoding.txt")
-    stdin.puts(incrementCounter)
-    puts(incrementCounter)
-    stdin.puts(ngramRange)
-    puts(ngramRange)
     stdin.close
     lastLine = ""
     while line = stdout.gets
@@ -344,8 +340,8 @@ while(incrementCounter <= testingSampleMax ) do
       lastLine = line
     end
     lastLine = lastLine.strip
-    outputFile.puts(factor.to_s + ";" + ngramRange.to_s + ";" + alphabetSize.to_s + ";" + alphabetEntropy + ";" + ngramEntropy + ";" + incrementCounter.to_s + ";ideal;"+ statDist[counter] +";"+ lastLine )
     stdout.close
+    outputFile.puts(factor.to_s + ";" + ngramRange.to_s + ";" + alphabetSize.to_s + ";" + alphabetEntropy + ";" + ngramEntropy + ";" + incrementCounter.to_s + ";ideal;"+ statDist[counter] +";"+ lastLine )
   end
   counter = counter +1
   incrementCounter = incrementCounter + testingSampleIncrement
@@ -380,8 +376,8 @@ while(testingSampleCounter <= testingSampleMax) do
         lastLine =line
       end
       lastLine = lastLine.strip
-      outputFile.puts(factor.to_s + ";" + ngramRange.to_s + ";" + alphabetSize.to_s + ";" + alphabetEntropy + ";" + ngramEntropy + ";"+ testingSampleCounter.to_s + ";" +  learningSampleCounter.to_s + ";" + statDist[counter] + ";"+ lastLine)
       stdout.close
+      outputFile.puts(factor.to_s + ";" + ngramRange.to_s + ";" + alphabetSize.to_s + ";" + alphabetEntropy + ";" + ngramEntropy + ";"+ testingSampleCounter.to_s + ";" +  learningSampleCounter.to_s + ";" + statDist[counter] + ";"+ lastLine)
     end
 
     counter = counter +1

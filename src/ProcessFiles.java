@@ -23,17 +23,17 @@ public class ProcessFiles {
 		}
 		
 		int numChars = 26;
-		System.out.println("Enter the number of characters to use. Max 26. Defaults to 26");
+		System.out.println("Enter the number of characters to use. Max 26. Defaults to 26 > ");
 		String in =sc.nextLine();
 		if(!in.isEmpty()){
 			numChars = Integer.parseInt(in);
 		}
 		
 		boolean includeSpaces = false;
-		System.out.println("Use spaces (y/N)?");
+		System.out.println("Use spaces (y/N)? > ");
 		in =sc.nextLine();
 		if(!in.isEmpty()){
-			includeSpaces = in.equals("y");
+			includeSpaces = in.trim().equals("y");
 		}
 		
 		ArrayList<File> textFiles = new ArrayList<>();
