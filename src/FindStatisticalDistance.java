@@ -48,7 +48,7 @@ public class FindStatisticalDistance {
 		System.out.println("Reading the second probabilities");
 		System.out.println();
 		
-		br = new BufferedReader(new FileReader(inputFile1));
+		br = new BufferedReader(new FileReader(inputFile2));
 		while((line = br.readLine()) != null){
 			String[] split = line.split(" ~:~ ");
 			probsQ.put(split[0], Double.parseDouble(split[1]));
@@ -130,7 +130,7 @@ public class FindStatisticalDistance {
 		System.out.println();
 		System.out.println();
 		System.out.println("Calculating JSD(P||Q)");
-		double jsd = (0.5 * dPM) + (0.5 + dQM);
+		double jsd = (0.5 * dPM) + (0.5 * dQM);
 		
 		
 		System.out.println(jsd);
@@ -138,6 +138,9 @@ public class FindStatisticalDistance {
 	}
 	
 	private static double logDistance(double p, double q){
+		if(p==0){
+			return 0;
+		}
 		double a = Math.log(p) / Math.log(2);
 		double b = Math.log(q) / Math.log(2);
 		return p * (a/b);

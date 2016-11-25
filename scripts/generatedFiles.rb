@@ -137,9 +137,13 @@ outputFile = File.open(outputFileName ,"a+")
 puts("Running: java -cp #{classpath} CreateDistribution")
 Open3.popen2("java -Xms6G -Xmx6G -cp #{classpath} CreateDistribution") do |stdin, stdout, wait_thr|
   stdin.puts("#{directory}/probs/")
+  puts("#{directory}/probs/")
   stdin.puts(alphabetSize)
+  puts(alphabetSize)
   stdin.puts(ngramRange)
+  puts(ngramRange)
   stdin.puts(factor)
+  puts(factor)
   stdin.close
   while line = stdout.gets
     puts line
@@ -148,13 +152,47 @@ Open3.popen2("java -Xms6G -Xmx6G -cp #{classpath} CreateDistribution") do |stdin
 
 end
 
+#Find the entrpy of the alphabet
+alphabetEntropy = ""
+puts("Running: java -cp #{classpath} FindEntropy")
+Open3.popen2("java -Xms6G -Xmx6G -cp #{classpath} FindEntropy") do |stdin, stdout, wait_thr|
+  stdin.puts("#{directory}/probs/probs1.txt")
+  puts("#{directory}/probs/probs1.txt")
+  stdin.close
+  lastLine = ""
+  while line = stdout.gets
+    puts line
+    lastLine = line
+  end
+  stdout.close
+  alphabetEntropy = lastLine.strip
 
+end
+
+#Find the entrpy of the ngrams
+ngramEntropy = ""
+puts("Running: java -cp #{classpath} FindEntropy")
+Open3.popen2("java -Xms6G -Xmx6G -cp #{classpath} FindEntropy") do |stdin, stdout, wait_thr|
+  stdin.puts("#{directory}/probs/probs#{ngramRange}.txt")
+  puts("#{directory}/probs/probs#{ngramRange}.txt")
+  stdin.close
+  lastLine = ""
+  while line = stdout.gets
+    puts line
+    lastLine = line
+  end
+  stdout.close
+  ngramEntropy = lastLine.strip
+
+end
 
 #create the ideal coding for the upper ngram range
 puts("Running: java -cp #{classpath} GenerateCoding")
 Open3.popen2("java -Xms6G -Xmx6G -cp #{classpath} GenerateCoding") do |stdin, stdout, wait_thr|
   stdin.puts("#{directory}/probs/probs#{ngramRange}.txt")
+  puts("#{directory}/probs/probs#{ngramRange}.txt")
   stdin.puts("#{directory}/idealCoding.txt")
+  puts("#{directory}/idealCoding.txt")
   stdin.close
   while line = stdout.gets
     puts line
@@ -174,9 +212,13 @@ while(incrementCounter <= learningSampleMax ) do
 
   Open3.popen2("java -Xms6G -Xmx6G -cp #{classpath} GenerateFile") do |stdin, stdout, wait_thr|
     stdin.puts("#{directory}/probs/")
+    puts("#{directory}/probs/")
     stdin.puts("#{directory}/learningSampleFiles/#{incrementCounter}/sample.proc.txt")
+    puts("#{directory}/learningSampleFiles/#{incrementCounter}/sample.proc.txt")
     stdin.puts(incrementCounter)
+    puts(incrementCounter)
     stdin.puts(ngramRange)
+    puts(ngramRange)
     stdin.close
     while line = stdout.gets
       puts line
@@ -199,9 +241,13 @@ while(incrementCounter <= testingSampleMax ) do
 
   Open3.popen2("java -Xms6G -Xmx6G -cp #{classpath} GenerateFile") do |stdin, stdout, wait_thr|
     stdin.puts("#{directory}/probs/")
+    puts("#{directory}/probs/")
     stdin.puts("#{directory}/testingSampleFiles/#{incrementCounter}/sample.proc.txt")
+    puts("#{directory}/testingSampleFiles/#{incrementCounter}/sample.proc.txt")
     stdin.puts(incrementCounter)
+    puts(incrementCounter)
     stdin.puts(ngramRange)
+    puts(ngramRange)
     stdin.close
     while line = stdout.gets
       puts line
@@ -213,6 +259,8 @@ while(incrementCounter <= testingSampleMax ) do
   incrementCounter = incrementCounter + testingSampleIncrement
 end
 
+#array to track statistical distances
+statDist = Array.new
 
 #generate probabilities/codings for the learning files
 incrementCounter = learningSampleMin
@@ -222,8 +270,11 @@ while(incrementCounter <= learningSampleMax ) do
 
   Open3.popen2("java -Xms6G -Xmx6G -cp #{classpath} GenerateProbabilities") do |stdin, stdout, wait_thr|
     stdin.puts("#{directory}/learningSampleFiles/#{incrementCounter}/")
+    puts("#{directory}/learningSampleFiles/#{incrementCounter}/")
     stdin.puts(ngramRange)
+    puts(ngramRange)
     stdin.puts("#{directory}/learningSampleFiles/#{incrementCounter}/probs.txt")
+    puts("#{directory}/learningSampleFiles/#{incrementCounter}/probs.txt")
     stdin.close
     while line = stdout.gets
       puts line
@@ -231,13 +282,34 @@ while(incrementCounter <= learningSampleMax ) do
     stdout.close
   end
 
+  #Find the statistical distance for the generated probabilities file
+  puts("Running: java -cp #{classpath} FindStatisticalDistance")
+  Open3.popen2("java -Xms6G -Xmx6G -cp #{classpath} FindStatisticalDistance") do |stdin, stdout, wait_thr|
+    stdin.puts("#{directory}/learningSampleFiles/#{incrementCounter}/probs.txt")
+    puts("#{directory}/learningSampleFiles/#{incrementCounter}/probs.txt")
+    stdin.puts("#{directory}/probs/probs#{ngramRange}.txt")
+    puts("#{directory}/probs/probs#{ngramRange}.txt")
+    stdin.close
+    lastLine = ""
+    while line = stdout.gets
+      puts line
+      lastLine = line
+    end
+    lastLine = lastLine.strip
+    stdout.close
+    #track the statistical distance
+    statDist << lastLine
+
+  end
 
   #generate codings
   puts("Running: java -cp #{classpath} GenerateCoding")
 
   Open3.popen2("java -Xms6G -Xmx6G -cp #{classpath} GenerateCoding") do |stdin, stdout, wait_thr|
     stdin.puts("#{directory}/learningSampleFiles/#{incrementCounter}/probs.txt")
+    puts("#{directory}/learningSampleFiles/#{incrementCounter}/probs.txt")
     stdin.puts("#{directory}/learningSampleFiles/#{incrementCounter}/codings.txt")
+    puts("#{directory}/learningSampleFiles/#{incrementCounter}/codings.txt")
     stdin.close
     while line = stdout.gets
       puts line
@@ -250,6 +322,7 @@ end
 
 
 #determine the ideal coding length for each testing sample
+counter = 0
 incrementCounter = testingSampleMin
 while(incrementCounter <= testingSampleMax ) do
 
@@ -257,19 +330,24 @@ while(incrementCounter <= testingSampleMax ) do
 
   Open3.popen2("java -Xms6G -Xmx6G -cp #{classpath} FindCodeLength") do |stdin, stdout, wait_thr|
     stdin.puts("#{directory}/testingSampleFiles/#{incrementCounter}/sample.proc.txt")
+    puts("#{directory}/testingSampleFiles/#{incrementCounter}/sample.proc.txt")
     stdin.puts("#{directory}/idealCoding.txt")
+    puts("#{directory}/idealCoding.txt")
     stdin.puts(incrementCounter)
+    puts(incrementCounter)
     stdin.puts(ngramRange)
+    puts(ngramRange)
     stdin.close
     lastLine = ""
     while line = stdout.gets
       puts line
       lastLine = line
     end
-    outputFile.puts(factor.to_s + ";" + ngramRange.to_s + ";" + alphabetSize.to_s + ";" + incrementCounter.to_s + ";ideal;" + lastLine)
+    lastLine = lastLine.strip
+    outputFile.puts(factor.to_s + ";" + ngramRange.to_s + ";" + alphabetSize.to_s + ";" + alphabetEntropy + ";" + ngramEntropy + ";" + incrementCounter.to_s + ";ideal;"+ statDist[counter] +";"+ lastLine )
     stdout.close
   end
-
+  counter = counter +1
   incrementCounter = incrementCounter + testingSampleIncrement
 end
 
@@ -279,6 +357,7 @@ testingSampleCounter = testingSampleMin
 while(testingSampleCounter <= testingSampleMax) do
 
   learningSampleCounter = learningSampleMin
+  counter = 0
   while(learningSampleCounter <= learningSampleMax) do
 
     puts("For " + testingSampleCounter.to_s + " and " + learningSampleCounter.to_s)
@@ -287,19 +366,25 @@ while(testingSampleCounter <= testingSampleMax) do
 
     Open3.popen2("java -Xms6G -Xmx6G -cp #{classpath} FindCodeLength") do |stdin, stdout, wait_thr|
       stdin.puts("#{directory}/testingSampleFiles/#{testingSampleCounter}/sample.proc.txt")
+      puts("#{directory}/testingSampleFiles/#{testingSampleCounter}/sample.proc.txt")
       stdin.puts("#{directory}/learningSampleFiles/#{learningSampleCounter}/codings.txt")
+      puts("#{directory}/learningSampleFiles/#{learningSampleCounter}/codings.txt")
       stdin.puts(incrementCounter)
+      puts(incrementCounter)
       stdin.puts(ngramRange)
+      puts(ngramRange)
       stdin.close
       lastLine = ""
       while line = stdout.gets
         puts line
         lastLine =line
       end
-      outputFile.puts(factor.to_s + ";" + ngramRange.to_s + ";" + alphabetSize.to_s + ";" + incrementCounter.to_s + ";" +  learningSampleCounter.to_s + ";" + lastLine)
+      lastLine = lastLine.strip
+      outputFile.puts(factor.to_s + ";" + ngramRange.to_s + ";" + alphabetSize.to_s + ";" + alphabetEntropy + ";" + ngramEntropy + ";"+ testingSampleCounter.to_s + ";" +  learningSampleCounter.to_s + ";" + statDist[counter] + ";"+ lastLine)
       stdout.close
     end
 
+    counter = counter +1
     learningSampleCounter = learningSampleCounter + learningSampleIncrement
   end
 

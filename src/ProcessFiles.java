@@ -22,6 +22,19 @@ public class ProcessFiles {
 			return;
 		}
 		
+		int numChars = 26;
+		System.out.println("Enter the number of characters to use. Max 26. Defaults to 26");
+		String in =sc.nextLine();
+		if(!in.isEmpty()){
+			numChars = Integer.parseInt(in);
+		}
+		
+		boolean includeSpaces = false;
+		System.out.println("Use spaces (y/N)?");
+		in =sc.nextLine();
+		if(!in.isEmpty()){
+			includeSpaces = in.equals("y");
+		}
 		
 		ArrayList<File> textFiles = new ArrayList<>();
 		
@@ -47,15 +60,15 @@ public class ProcessFiles {
 			BufferedWriter bw = new BufferedWriter(new FileWriter(destFile));
 			Integer c =  null;
 			int i = 0;
-			for(int j = 0; j<30; j++){
-				br.readLine();
-			}
+//			for(int j = 0; j<30; j++){
+//				br.readLine();
+//			}
 			boolean doubleSpace = false;
 			while((c = br.read()) != -1){
 				if(c==9 || c == 10){
 					c = 32;
 				}
-				if(c == 32 || (c >= 65 && c<= 90) || (c >= 97 && c<= 122) ){
+				if((c == 32 && includeSpaces) || (c >= 65 && c< 65 + numChars) || (c >= 97 && c< 97 + numChars) ){
 					if(c == 32 && doubleSpace){
 						continue;
 					}

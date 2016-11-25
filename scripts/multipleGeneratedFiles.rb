@@ -142,7 +142,7 @@ for factor in minFactor..maxFactor do
         puts()
         puts("Running: ./generatedFiles.rb -d #{directory}/workingDir/ -a #{alphabetSize} -f #{factor} -r #{ngramRange}  -m #{learningSampleMin} -l #{learningSampleMax} -i #{learningSampleIncrement} -M #{testingSampleMin} -L #{testingSampleMax} -I #{testingSampleIncrement} --skipCompiling -c #{directory}/obj/")
         puts("_____________________________________________________________")
-        Open3.popen2("./generatedFiles.rb -d #{directory}/workingDir/ -a #{alphabetSize} -f #{factor} -r #{ngramRange}  -m #{learningSampleMin} -l #{learningSampleMax} -i #{learningSampleIncrement} -M #{testingSampleMin} -L #{testingSampleMax} -I #{testingSampleIncrement} -o #{directory}/workingDir/output.txt --skipCompiling -c #{directory}/obj/") do |stdin, stdout, wait_thr|
+        Open3.popen2("./generatedFiles.rb -d #{directory}/workingDir/ -a #{alphabetSize} -f #{factor} -r #{ngramRange}  -m #{learningSampleMin} -l #{learningSampleMax} -i #{learningSampleIncrement} -M #{testingSampleMin} -L #{testingSampleMax} -I #{testingSampleIncrement} -o #{directory}/output.txt --skipCompiling -c #{directory}/obj/") do |stdin, stdout, wait_thr|
           stdin.close
           if(!skipPrinting)
             while line = stdout.gets
@@ -153,8 +153,8 @@ for factor in minFactor..maxFactor do
 
         end
 
-        `mv #{directory}/workingDir/output.txt #{directory}/workingDir/e#{e}f#{factor}n#{ngramRange}a#{alphabetSize}.txt`
-        `cp #{directory}/workingDir/e#{e}f#{factor}n#{ngramRange}a#{alphabetSize}.txt #{directory}`
+        #`mv #{directory}/workingDir/output.txt #{directory}/workingDir/n#{ngramRange}a#{alphabetSize}f#{factor}e#{e}.txt`
+        #`cp #{directory}/workingDir/n#{ngramRange}a#{alphabetSize}f#{factor}e#{e}.txt #{directory}`
 
       end
     end
