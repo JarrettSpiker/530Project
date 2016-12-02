@@ -6,6 +6,65 @@ Some things to note:
     - expect large inputs to take a few minutes
     - GIVE JAVA more heap space. To give it, say, 6 gigs, run as `java -Xms6G -Xmx6G programName`. If you use eclipse (or any IDE) , those arguments go in the JVM arguments of the run configuration
 
+
+# Getting Generated Files Output
+
+You will want to run the `multipleGeneratedFiles.rb` script from the scripts directory (like, actually run the script in the directory, if you call it from somewhere else it might not work).
+
+The call will look something like this 
+
+`./multipleGeneratedFiles.rb -d ~/test1/ -e 5 -a 2 -A 5 -f 1 -F 3 -r 1 -R  10  -m 5000 -l 10000 -i 5000 -M 5000 -L 10000 -I 5000`
+
+The arguments which you need to specify are as follows:
+
+  - -d a working directory. This should be a directory which exists and doesnt contain anything important, as the script will delete everything currently in the directory.
+   
+  - -e the number of expreriments to run. These are probabalistic, so you will get different results for the same input, so it can be nice to run each experiment multiple times
+  
+  
+  - -a and -A the lower and upper bounds (inclusive) for the alphabet size, respectively.
+  
+  - -f and -F the lower and upper bounds (inclusive) for the factor used when determining the probabilities of the alphabet (1-grams). The lower the value, the higher the entropy of the alphabet
+  
+  - -r and -R the lower and upper bounds (inclusive) for the n-gram ranges.
+  
+  - -m -l and -i these are the lower (m) and upper (l) bounds of the learning sample sizes. This is the size of the sample which is generated, and then used to generate the imperfect huffman codes. -i is the increment, the amount to add to the lower bound with each test case. So if you put -m 100 -l 300 -i 40, test cases will be run for sample sizes of 100, 140, 180, 220, 260, 300.
+  
+  - -M -L and -I these are the lower (M) and upper (L) bounds of the testing sample sizes. This is the size of thefile which will be encoded with the huffman codes. -I is the increment, the amount to add to the lower bound with each test case. So if you put -M 100 -L 300 -I 40, test cases will be run for testing sizes of 100, 140, 180, 220, 260, 300.
+  
+You are welcome to make the lower and upper bound the same value, if you dont want to test over different values for that input. A test case will be run for EACH POSSIBLE COMBINATION of inputs in the ranges specified, and this gets big reaaaallly quick if you make all of the ranges large.
+
+v
+
+# Getting Natural Language Output
+
+To start, most of the same rules apply here as in the Generate Files output, just with a different script and slightly different arguments
+
+To run this, though, you need to start with 2 things:
+  1. A directory with several txt files (the books directory from this project works)
+  2. A different txt file youd like to encode. If you want, you can just pull one of the files out of the books dir, but dont include that file in #1 then.
+  
+So the script for this is: `multipleNaturalFiles.rb` and the call looks like this:
+
+`./multipleNaturalFiles.rb -d /Users/jspiker/test2 -a 2 -A 10 -b ../books -n 1 -n 10 -e 2 -t /Users/jspiker/kingarthur.txt`
+
+
+  - -d a working directory. This should be a directory which exists and doesnt contain anything important, as the script will delete everything currently in the directory.
+   
+  - -e the number of expreriments to run. These are probabalistic, so you will get different results for the same input, so it can be nice to run each experiment multiple times
+  
+  
+  - -a and -A the lower and upper bounds (inclusive) for the alphabet size, respectively.
+  
+  - -n and -N the lower and upper bounds (inclusive) for the n-gram ranges.
+  
+  - -b is the directory with the text files which will be used to generate huffman encodings(the #1 dir described above)
+  
+  - -t the txt file you want to encode. This will be used for all test cases (#2 described above) 
+
+The output will be written to an output file inside of the working directory specified. It is ALMOST a csv, it just needs column headers. It is easy enough to just import it into excel or an excel equivalent
+  
+
 # Generating Encodings
 
 You can either generate codings based on English or on a generated language.
