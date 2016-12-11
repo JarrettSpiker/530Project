@@ -10,12 +10,16 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Scanner;
 
+/*
+* Create a file with specified character length based on input probabilities
+*/
 public class GenerateFile {
 
 	public static final String defaultProbsDir = System.getProperty("user.home") + "/genOutput";
 	public static final String defaultOuptutFile = System.getProperty("user.home") + "/genOutput/sampleFile.txt";
 	
 	public static void main(String[] args) throws Exception {
+		//get ouput file location and name
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Enter the name of the probabilities directory > ");
 		String probFilesName = sc.nextLine();
@@ -38,16 +42,19 @@ public class GenerateFile {
 		outputFile.createNewFile();
 		BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile));
 		
-		
+		//get the number of characters for the new file
 		System.out.println("Enter the number of characters in the generated file > ");
 		long fileSize = Long.parseLong(sc.nextLine());
 		
+		//max n-gram size used to generate the file
 		System.out.println("Enter the maximum n-gram size > ");
 		int maxNgramSize = Integer.parseInt(sc.nextLine());
+		//close system input
 		sc.close();
 		
 		Random random = new Random();
 		
+		//Determining the first letter
 		System.out.println("Determining the first prefix...");
 		System.out.println("--------------------------------------------------");
 		String firstPrefix = "";
@@ -58,11 +65,13 @@ public class GenerateFile {
 		
 		for(int i = 1; i< maxNgramSize; i++ ){
 			current++;
+			//for printing out progress bar
 			if(100.0*current/target > milestone){
 				milestone += 2;
 				System.out.print("*****");
 			}
 			
+			//read probabilities from file and based on the probability of the letter choose the next letter
 			File iFile = new File(probsDir, "probs" + i +".txt");
 			BufferedReader iBr = new BufferedReader(new FileReader(iFile));
 			ArrayList<Pair> choices = new ArrayList<>();
@@ -102,6 +111,8 @@ public class GenerateFile {
 		}
 		br.close();
 		
+		
+		//probabilities of the first x letter 
 		System.out.println();
 		System.out.println("Constructing prefix tree.....");
 		System.out.println("--------------------------------------------------");
@@ -139,6 +150,7 @@ public class GenerateFile {
 		System.out.println();
 		System.out.println();
 		
+		//probabilities of following the frist x letter
 		System.out.println("Calculating intermediate probabilities...");
 		System.out.println("--------------------------------------------------");
 		milestone = 0;
@@ -174,6 +186,7 @@ public class GenerateFile {
 		System.out.println("--------------------------------------------------");
 		milestone = 0;
 		
+		//create file based on the probabilities
 		bw.write(firstPrefix);
 		long currentLength = firstPrefix.length();
 		String currentPrefix = firstPrefix;

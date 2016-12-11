@@ -9,6 +9,12 @@ import java.util.HashMap;
 import java.util.Scanner;
 import java.util.Map.Entry;
 
+/*
+* create probabilties based on english text files,
+* takes a directory of text files, output a single probabilties
+* file based on the contents of the file for the n-gram size the
+* user inputed
+*/
 public class GenerateProbabilities {
 	static final String defaultSearchDir = System.getProperty("user.home") + "/books/";
 	static final String defaultOutputFile = System.getProperty("user.home") + "/output/";
@@ -18,6 +24,7 @@ public class GenerateProbabilities {
 		
 		long startTime = System.currentTimeMillis();
 		
+		//get directory holding the text files
 		System.out.println("Enter the directory to search > ");
 		String searchDir = sc.nextLine();
 		
@@ -35,7 +42,7 @@ public class GenerateProbabilities {
 		
 		
 		ArrayList<File> textFiles = new ArrayList<>();
-		
+		//find all text files in this directory
 		for(String f : inputDir.list(new FilenameFilter() {
 					@Override
 					public boolean accept(File dir, String name) {
@@ -49,11 +56,11 @@ public class GenerateProbabilities {
 		
 		HashMap<String, Long> count = new HashMap<>();
 		int total = 0;
-		
+		//get n-gram size
 		System.out.println("Enter the n-gram size > ");
 		Integer ngramSize = Integer.parseInt(sc.nextLine());
 		
-		
+		//get output file
 		System.out.println("Enter the path of the output file > ");
 		
 		String outputDir = sc.nextLine();
@@ -67,7 +74,7 @@ public class GenerateProbabilities {
 		outputFile.createNewFile();
 		
 		
-		
+		//count the ocurence of all n-gram texts
 		for(File textFile : textFiles){
 			System.out.println("Reading " + textFile.getName());
 			
@@ -91,10 +98,12 @@ public class GenerateProbabilities {
 		int milestone = 0;
 		int foo = 0;
 		System.out.println("--------------------------------------------------");
-	
+		
+		//finding probabilties based on total input
 		HashMap<String,Double> probs = new HashMap<String, Double>();
 		for(Entry<String, Long> entry : count.entrySet()){
 			foo++;
+			//for printing out progress bar
 			if(100.0*foo/initialSize > milestone){
 				milestone += 2;
 				System.out.print("*");
@@ -111,7 +120,7 @@ public class GenerateProbabilities {
 		
 		BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile));
 		
-		
+		//write to file
 		System.out.println("Writing probabilties to file...");
 		System.out.println("--------------------------------------------------");
 		for(Entry<String, Double> entry : probs.entrySet()){

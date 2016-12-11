@@ -8,6 +8,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/*
+* used to trim english texts, can be used to remove letters and spaces
+* that would not work later processing, output a file with letters and 
+* spaces removed.
+*/
 public class ProcessFiles {
 
 	public static void main(String[] args) throws IOException{

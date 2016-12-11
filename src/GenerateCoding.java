@@ -12,6 +12,9 @@ import java.util.PriorityQueue;
 import java.util.Scanner;
 import java.util.Stack;
 
+/*
+* gnerate huffman encoding for a probability file
+*/
 public class GenerateCoding {
 
 	static final int SORTING_MAX = 10;
@@ -24,6 +27,7 @@ public class GenerateCoding {
 		
 		long startTime = System.currentTimeMillis();
 		
+		//get the name of file
 		System.out.println("Enter the probabilities file > ");
 		String probabilitesFileName = sc.nextLine();
 		
@@ -126,6 +130,7 @@ public class GenerateCoding {
 		
 		while(!stack.isEmpty()){
 			
+			//for printing out progress bar
 			if(100.0*huffmanCodesList.size()/initialSize > milestone){
 				System.out.print("*");
 				milestone += 2;

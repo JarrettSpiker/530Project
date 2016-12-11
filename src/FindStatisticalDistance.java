@@ -4,12 +4,15 @@ import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Scanner;
-
+/*
+* calculate the statical distance between two probabilities
+*/
 public class FindStatisticalDistance {
 
 	public static void main(String[] args) throws Exception{
 		Scanner sc = new Scanner(System.in);
 		
+		//get first probabilities file
 		System.out.println("Enter the name of the first probabilities > ");
 		String inputFile1Name = sc.nextLine();
 		File inputFile1 = new File(inputFile1Name);
@@ -19,6 +22,7 @@ public class FindStatisticalDistance {
 			return;
 		}
 		
+		//get second probabilities file
 		System.out.println("Enter the name of the second probabilities > ");
 		String inputFile2Name = sc.nextLine();
 		File inputFile2 = new File(inputFile2Name);
@@ -27,6 +31,7 @@ public class FindStatisticalDistance {
 			System.out.println("THIS FILE DOESNT EXIST");
 			return;
 		}
+		//close system input
 		sc.close();
 		
 		
@@ -37,26 +42,30 @@ public class FindStatisticalDistance {
 		System.out.println("Reading the first probabilities");
 		System.out.println();
 		
+		//read probabilities from first file
 		BufferedReader br = new BufferedReader(new FileReader(inputFile1));
 		String line;
 		while((line = br.readLine()) != null){
 			String[] split = line.split(" ~:~ ");
 			probsP.put(split[0], Double.parseDouble(split[1]));
 		}
+		//close first file
 		br.close();
 		
 		System.out.println("Reading the second probabilities");
 		System.out.println();
 		
+		//read probabilities from second file
 		br = new BufferedReader(new FileReader(inputFile2));
 		while((line = br.readLine()) != null){
 			String[] split = line.split(" ~:~ ");
 			probsQ.put(split[0], Double.parseDouble(split[1]));
 		}
+		//close second file
 		br.close();
 		
-		//This uses the Jensen-Shannon distribution
 		
+		//This uses the Jensen-Shannon distribution
 		
 		System.out.println();
 		System.out.println("Calculating M = (P+Q)/2");
@@ -66,6 +75,7 @@ public class FindStatisticalDistance {
 		
 		HashMap<String, Double> probsM = new HashMap<>();
 		
+		//print out first half of progress bar
 		System.out.println("--------------------------------------------------");
 		for(Entry<String, Double> p : probsP.entrySet()){
 			foo++;
@@ -76,6 +86,7 @@ public class FindStatisticalDistance {
 			probsM.put(p.getKey(), (probsQ.getOrDefault(p.getKey(), 0.0) + p.getValue())/2);
 		}
 		
+		//print the second half of progress bar
 		for(Entry<String, Double> q : probsQ.entrySet()){
 			foo++;
 			if(100.0*foo/initialSize > milestone){
@@ -137,6 +148,7 @@ public class FindStatisticalDistance {
 		
 	}
 	
+	//calculate the distance between two inputs
 	private static double logDistance(double p, double q){
 		if(p==0){
 			return 0;
